@@ -1,0 +1,3435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#02030a">
+<meta name="description" content="Pratik Mishra — CSE Cyber Security Digital Universe">
+<title>PRATIK // DIGITAL UNIVERSE</title>
+
+<style>
+/* ============================================================
+   PRATIK DIGITAL UNIVERSE
+   PREMIUM CYBER UI
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+    background:#010208;
+}
+
+body{
+    min-height:100vh;
+    overflow-x:hidden;
+    background:
+        radial-gradient(circle at 50% 50%,#081027 0%,#02030a 45%,#000 100%);
+    color:#fff;
+    font-family:Inter,Arial,sans-serif;
+}
+
+body::-webkit-scrollbar{
+    width:4px;
+}
+
+body::-webkit-scrollbar-track{
+    background:#02030a;
+}
+
+body::-webkit-scrollbar-thumb{
+    background:rgba(0,220,255,.65);
+    border-radius:20px;
+}
+
+#space{
+    position:fixed;
+    inset:0;
+    z-index:1;
+}
+
+canvas{
+    display:block;
+}
+
+#ui{
+    position:fixed;
+    inset:0;
+    z-index:10;
+    pointer-events:none;
+}
+
+.scanlines{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:.08;
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0px,
+            transparent 3px,
+            rgba(255,255,255,.08) 4px
+        );
+    mix-blend-mode:screen;
+}
+
+.vignette{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background:
+        radial-gradient(
+            circle,
+            transparent 38%,
+            rgba(0,0,0,.15) 65%,
+            rgba(0,0,0,.75) 100%
+        );
+}
+
+.grain{
+    position:fixed;
+    inset:-50%;
+    width:200%;
+    height:200%;
+    opacity:.035;
+    pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+    animation:grain .2s steps(2) infinite;
+}
+
+@keyframes grain{
+    0%{transform:translate(0,0)}
+    25%{transform:translate(2%,-1%)}
+    50%{transform:translate(-1%,2%)}
+    75%{transform:translate(1%,1%)}
+    100%{transform:translate(0,0)}
+}
+
+/* ============================================================
+   BOOT SCREEN
+   ============================================================ */
+
+#boot{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    background:#010208;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:opacity 1s ease,visibility 1s ease;
+}
+
+#boot.hide{
+    opacity:0;
+    visibility:hidden;
+}
+
+.boot-inner{
+    width:min(560px,85vw);
+}
+
+.boot-logo{
+    font-family:Orbitron,sans-serif;
+    font-size:clamp(25px,5vw,55px);
+    font-weight:800;
+    letter-spacing:.16em;
+    color:#fff;
+    margin-bottom:25px;
+}
+
+.boot-logo span{
+    color:#00eaff;
+    text-shadow:
+        0 0 10px #00eaff,
+        0 0 40px rgba(0,234,255,.6);
+}
+
+.boot-status{
+    display:flex;
+    justify-content:space-between;
+    font-family:monospace;
+    font-size:11px;
+    color:#6e8498;
+    margin-bottom:9px;
+}
+
+.boot-progress{
+    height:2px;
+    background:#101724;
+    overflow:hidden;
+}
+
+.boot-progress-bar{
+    width:0%;
+    height:100%;
+    background:#00eaff;
+    box-shadow:
+        0 0 10px #00eaff,
+        0 0 25px #00eaff;
+}
+
+/* ============================================================
+   TOP HUD
+   ============================================================ */
+
+.topbar{
+    position:absolute;
+    top:20px;
+    left:24px;
+    right:24px;
+    height:50px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 17px;
+    border:1px solid rgba(255,255,255,.08);
+    background:rgba(2,5,15,.38);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+}
+
+.brand{
+    font-family:Orbitron,sans-serif;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.18em;
+}
+
+.brand b{
+    color:#00eaff;
+}
+
+.status{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:monospace;
+    font-size:10px;
+    color:#75879a;
+}
+
+.status-dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#00ffb3;
+    box-shadow:0 0 10px #00ffb3;
+    animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+    0%,100%{opacity:.4}
+    50%{opacity:1}
+}
+
+.audio-btn{
+    pointer-events:auto;
+    cursor:pointer;
+    background:transparent;
+    border:1px solid rgba(255,255,255,.1);
+    color:#91a6b8;
+    padding:7px 12px;
+    font-family:monospace;
+    font-size:9px;
+    transition:.3s;
+}
+
+.audio-btn:hover{
+    border-color:#00eaff;
+    color:#00eaff;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+.hero{
+    position:absolute;
+    left:7vw;
+    top:50%;
+    transform:translateY(-50%);
+    max-width:650px;
+}
+
+.kicker{
+    font-family:monospace;
+    font-size:11px;
+    letter-spacing:.3em;
+    color:#00eaff;
+    margin-bottom:18px;
+}
+
+.hero h1{
+    font-family:Orbitron,sans-serif;
+    font-size:clamp(45px,8vw,105px);
+    line-height:.9;
+    letter-spacing:-.06em;
+    font-weight:800;
+    text-shadow:
+        0 0 30px rgba(0,210,255,.15);
+}
+
+.hero h1 .cyan{
+    color:#00eaff;
+    text-shadow:
+        0 0 12px rgba(0,234,255,.8),
+        0 0 60px rgba(0,234,255,.3);
+}
+
+.hero-sub{
+    margin-top:25px;
+    max-width:520px;
+    color:#91a3b4;
+    font-size:14px;
+    line-height:1.8;
+}
+
+.hero-meta{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:27px;
+}
+
+.tag{
+    border:1px solid rgba(0,234,255,.16);
+    background:rgba(0,234,255,.025);
+    padding:8px 11px;
+    color:#83a1b5;
+    font-family:monospace;
+    font-size:9px;
+    letter-spacing:.1em;
+}
+
+/* ============================================================
+   SECTION PANELS
+   ============================================================ */
+
+.panel{
+    position:absolute;
+    width:min(580px,43vw);
+    right:7vw;
+    top:50%;
+    transform:translateY(-50%);
+    opacity:0;
+    visibility:hidden;
+    transition:
+        opacity .7s ease,
+        transform .7s cubic-bezier(.2,.8,.2,1);
+}
+
+.panel.active{
+    opacity:1;
+    visibility:visible;
+    transform:translateY(-50%);
+}
+
+.panel-label{
+    font-family:monospace;
+    color:#00eaff;
+    font-size:10px;
+    letter-spacing:.25em;
+    margin-bottom:15px;
+}
+
+.panel h2{
+    font-family:Orbitron,sans-serif;
+    font-size:clamp(30px,4vw,56px);
+    line-height:1;
+    margin-bottom:20px;
+    letter-spacing:-.04em;
+}
+
+.panel p{
+    color:#9aabba;
+    font-size:14px;
+    line-height:1.85;
+}
+
+.panel-box{
+    margin-top:25px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+}
+
+.stat-card{
+    min-height:80px;
+    border:1px solid rgba(255,255,255,.08);
+    background:rgba(5,10,24,.45);
+    padding:15px;
+    backdrop-filter:blur(12px);
+}
+
+.stat-title{
+    font-family:monospace;
+    color:#526577;
+    font-size:9px;
+    letter-spacing:.14em;
+    margin-bottom:9px;
+}
+
+.stat-value{
+    color:#d8e9f4;
+    font-family:Orbitron,sans-serif;
+    font-size:14px;
+}
+
+.timeline{
+    margin-top:25px;
+    border-left:1px solid rgba(0,234,255,.3);
+    padding-left:20px;
+}
+
+.timeline-item{
+    position:relative;
+    margin-bottom:19px;
+}
+
+.timeline-item:before{
+    content:"";
+    position:absolute;
+    left:-25px;
+    top:5px;
+    width:8px;
+    height:8px;
+    border:1px solid #00eaff;
+    background:#02030a;
+    box-shadow:0 0 12px #00eaff;
+}
+
+.timeline-item strong{
+    display:block;
+    font-family:Orbitron,sans-serif;
+    font-size:11px;
+    margin-bottom:4px;
+}
+
+.timeline-item span{
+    font-size:11px;
+    color:#718596;
+}
+
+/* ============================================================
+   TERMINAL
+   ============================================================ */
+
+.terminal{
+    margin-top:25px;
+    background:rgba(0,0,0,.55);
+    border:1px solid rgba(0,234,255,.13);
+    box-shadow:0 15px 50px rgba(0,0,0,.35);
+}
+
+.term-head{
+    height:28px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:0 10px;
+    border-bottom:1px solid rgba(255,255,255,.07);
+}
+
+.term-dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#42505d;
+}
+
+.term-body{
+    padding:16px;
+    font-family:monospace;
+    font-size:11px;
+    line-height:1.9;
+    color:#7eabbc;
+}
+
+.term-body .green{
+    color:#00ffb3;
+}
+
+.term-body .blue{
+    color:#00eaff;
+}
+
+/* ============================================================
+   PROJECT CARDS
+   ============================================================ */
+
+.projects{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:9px;
+    margin-top:24px;
+}
+
+.project{
+    min-height:110px;
+    border:1px solid rgba(255,255,255,.08);
+    background:rgba(5,10,20,.48);
+    padding:16px;
+    transition:.35s;
+}
+
+.project:hover{
+    transform:translateY(-4px);
+    border-color:rgba(0,234,255,.4);
+    background:rgba(0,234,255,.035);
+}
+
+.project-number{
+    font-family:monospace;
+    color:#00eaff;
+    font-size:9px;
+}
+
+.project h3{
+    font-family:Orbitron,sans-serif;
+    font-size:13px;
+    margin:13px 0 7px;
+}
+
+.project p{
+    font-size:10px;
+    line-height:1.5;
+}
+
+/* ============================================================
+   HUD TELEMETRY
+   ============================================================ */
+
+.telemetry{
+    position:absolute;
+    left:24px;
+    bottom:25px;
+    width:210px;
+    padding:13px;
+    border-left:1px solid rgba(0,234,255,.35);
+    background:rgba(0,5,15,.25);
+    font-family:monospace;
+    font-size:9px;
+    color:#617589;
+}
+
+.telemetry-row{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:7px;
+}
+
+.telemetry-row b{
+    color:#a9bac6;
+    font-weight:400;
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+
+.nav{
+    position:absolute;
+    right:25px;
+    top:50%;
+    transform:translateY(-50%);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.nav-dot{
+    width:5px;
+    height:5px;
+    border-radius:50%;
+    background:#33414d;
+    cursor:pointer;
+    pointer-events:auto;
+    transition:.3s;
+}
+
+.nav-dot.active{
+    background:#00eaff;
+    box-shadow:
+        0 0 8px #00eaff,
+        0 0 20px rgba(0,234,255,.5);
+    transform:scale(1.6);
+}
+
+/* ============================================================
+   BOTTOM PROGRESS
+   ============================================================ */
+
+.progress{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:2px;
+    background:rgba(255,255,255,.05);
+}
+
+.progress-bar{
+    height:100%;
+    width:0%;
+    background:#00eaff;
+    box-shadow:0 0 12px #00eaff;
+}
+
+/* ============================================================
+   OBJECT CARD
+   ============================================================ */
+
+.object-card{
+    position:absolute;
+    left:50%;
+    bottom:27px;
+    transform:translateX(-50%);
+    text-align:center;
+    font-family:monospace;
+}
+
+.object-id{
+    color:#00eaff;
+    font-size:9px;
+    letter-spacing:.2em;
+}
+
+.object-name{
+    color:#788b9a;
+    font-size:8px;
+    margin-top:5px;
+}
+
+/* ============================================================
+   SCROLL DRIVER
+   ============================================================ */
+
+.scroll-space{
+    position:relative;
+    height:850vh;
+    z-index:0;
+    pointer-events:none;
+}
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media(max-width:800px){
+
+    .topbar{
+        top:10px;
+        left:10px;
+        right:10px;
+    }
+
+    .status{
+        display:none;
+    }
+
+    .hero{
+        left:7vw;
+        right:7vw;
+        max-width:none;
+    }
+
+    .hero h1{
+        font-size:clamp(40px,13vw,70px);
+    }
+
+    .hero-sub{
+        font-size:12px;
+    }
+
+    .panel{
+        left:7vw;
+        right:7vw;
+        width:auto;
+        top:auto;
+        bottom:80px;
+        transform:translateY(15px);
+        max-height:65vh;
+        overflow:auto;
+    }
+
+    .panel.active{
+        transform:translateY(0);
+    }
+
+    .panel h2{
+        font-size:31px;
+    }
+
+    .panel p{
+        font-size:12px;
+    }
+
+    .panel-box{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .projects{
+        grid-template-columns:1fr;
+    }
+
+    .telemetry{
+        display:none;
+    }
+
+    .nav{
+        right:12px;
+    }
+
+    .object-card{
+        bottom:16px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ============================================================
+     BOOT
+     ============================================================ -->
+
+<div id="boot">
+    <div class="boot-inner">
+        <div class="boot-logo">
+            PRATIK<span>//</span>UNIVERSE
+        </div>
+
+        <div class="boot-status">
+            <span id="bootText">INITIALIZING DIGITAL ENVIRONMENT</span>
+            <span id="bootPercent">0%</span>
+        </div>
+
+        <div class="boot-progress">
+            <div class="boot-progress-bar" id="bootBar"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     3D WORLD
+     ============================================================ -->
+
+<div id="space"></div>
+
+<!-- ============================================================
+     UI
+     ============================================================ -->
+
+<div id="ui">
+
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+    <div class="grain"></div>
+
+    <header class="topbar">
+
+        <div class="brand">
+            PRATIK <b>//</b> DIGITAL UNIVERSE
+        </div>
+
+        <div class="status">
+            <span class="status-dot"></span>
+            SYSTEM ONLINE
+        </div>
+
+        <button class="audio-btn" id="audioBtn">
+            AUDIO: OFF
+        </button>
+
+    </header>
+
+    <!-- HERO -->
+
+    <section class="hero" id="hero">
+
+        <div class="kicker">
+            DIGITAL EXPLORER // 2026
+        </div>
+
+        <h1>
+            BUILD.<br>
+            <span class="cyan">SECURE.</span><br>
+            CREATE.
+        </h1>
+
+        <p class="hero-sub">
+            I am Pratik — a B.Tech CSE Cyber Security student
+            exploring code, cybersecurity, web technologies,
+            AI and digital systems.
+        </p>
+
+        <div class="hero-meta">
+            <span class="tag">CSE // CYBER SECURITY</span>
+            <span class="tag">C / DSA</span>
+            <span class="tag">WEB</span>
+            <span class="tag">SECURITY</span>
+            <span class="tag">AI</span>
+        </div>
+
+    </section>
+
+    <!-- ABOUT -->
+
+    <section class="panel" data-section="1">
+
+        <div class="panel-label">
+            SECTOR 01 // IDENTITY
+        </div>
+
+        <h2>
+            ABOUT<br>
+            ME
+        </h2>
+
+        <p>
+            I'm currently building my foundation in Computer Science
+            with a strong interest in Cyber Security. My goal isn't
+            just to learn technologies — it's to understand how
+            systems actually work and then build things with them.
+        </p>
+
+        <div class="panel-box">
+
+            <div class="stat-card">
+                <div class="stat-title">CURRENT ROLE</div>
+                <div class="stat-value">CSE STUDENT</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">SPECIALIZATION</div>
+                <div class="stat-value">CYBER SECURITY</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">CURRENT LANGUAGE</div>
+                <div class="stat-value">C</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">EXPLORING</div>
+                <div class="stat-value">WEB + AI</div>
+            </div>
+
+        </div>
+
+        <div class="timeline">
+
+            <div class="timeline-item">
+                <strong>NOW</strong>
+                <span>
+                    Building programming fundamentals,
+                    C, DSA and computer science basics.
+                </span>
+            </div>
+
+            <div class="timeline-item">
+                <strong>NEXT</strong>
+                <span>
+                    Backend development, networking,
+                    Linux and security fundamentals.
+                </span>
+            </div>
+
+            <div class="timeline-item">
+                <strong>VISION</strong>
+                <span>
+                    Build real software and security projects
+                    instead of only collecting certificates.
+                </span>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- CYBER -->
+
+    <section class="panel" data-section="2">
+
+        <div class="panel-label">
+            SECTOR 02 // SECURITY
+        </div>
+
+        <h2>
+            CYBER<br>
+            SECURITY
+        </h2>
+
+        <p>
+            Cybersecurity is one of the areas I want to explore deeply:
+            how websites communicate, how authentication works,
+            how attacks happen and how systems can be designed
+            to resist them.
+        </p>
+
+        <div class="panel-box">
+
+            <div class="stat-card">
+                <div class="stat-title">WEB SECURITY</div>
+                <div class="stat-value">HTTP / AUTH</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">SECURITY</div>
+                <div class="stat-value">ETHICAL</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">AWARENESS</div>
+                <div class="stat-value">PHISHING</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">FOCUS</div>
+                <div class="stat-value">DEFENSE</div>
+            </div>
+
+        </div>
+
+        <div class="terminal">
+
+            <div class="term-head">
+                <span class="term-dot"></span>
+                <span class="term-dot"></span>
+                <span class="term-dot"></span>
+            </div>
+
+            <div class="term-body">
+
+                <div>
+                    <span class="green">pratik@universe</span>:~$
+                    <span class="blue">whoami</span>
+                </div>
+
+                <div>
+                    cyber_security_student
+                </div>
+
+                <div>
+                    <span class="green">pratik@universe</span>:~$
+                    <span class="blue">focus</span>
+                </div>
+
+                <div>
+                    learn → build → test → secure
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- CODE -->
+
+    <section class="panel" data-section="3">
+
+        <div class="panel-label">
+            SECTOR 03 // ENGINEERING
+        </div>
+
+        <h2>
+            CODE<br>
+            LAB
+        </h2>
+
+        <p>
+            C is where I'm currently strengthening my programming
+            fundamentals. From variables and conditions to loops,
+            functions and eventually DSA — this is the foundation
+            behind everything I want to build.
+        </p>
+
+        <div class="terminal">
+
+            <div class="term-head">
+                <span class="term-dot"></span>
+                <span class="term-dot"></span>
+                <span class="term-dot"></span>
+            </div>
+
+            <div class="term-body">
+
+<pre style="margin:0;font-family:monospace;color:#7894a4;">
+#include &lt;stdio.h&gt;
+
+int main()
+{
+    int future = 1;
+
+    while(future)
+    {
+        learn();
+        build();
+        experiment();
+        improve();
+    }
+
+    return 0;
+}
+</pre>
+
+            </div>
+
+        </div>
+
+        <div class="panel-box">
+
+            <div class="stat-card">
+                <div class="stat-title">LANGUAGE</div>
+                <div class="stat-value">C</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">NEXT</div>
+                <div class="stat-value">DSA</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">WEB</div>
+                <div class="stat-value">FRONTEND</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">FUTURE</div>
+                <div class="stat-value">BACKEND</div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- PROJECTS -->
+
+    <section class="panel" data-section="4">
+
+        <div class="panel-label">
+            SECTOR 04 // BUILDS
+        </div>
+
+        <h2>
+            PROJECT<br>
+            DECK
+        </h2>
+
+        <p>
+            A collection of experiments, websites and future
+            cybersecurity projects. The objective is simple:
+            turn knowledge into things that actually work.
+        </p>
+
+        <div class="projects">
+
+            <div class="project">
+                <div class="project-number">01 // WEB</div>
+                <h3>DIGITAL UNIVERSE</h3>
+                <p>
+                    An interactive 3D portfolio built with
+                    Three.js and WebGL.
+                </p>
+            </div>
+
+            <div class="project">
+                <div class="project-number">02 // CYBER</div>
+                <h3>SECURITY LAB</h3>
+                <p>
+                    Future experiments around web security
+                    and defensive concepts.
+                </p>
+            </div>
+
+            <div class="project">
+                <div class="project-number">03 // AI</div>
+                <h3>AI INTERFACE</h3>
+                <p>
+                    Exploring interfaces powered by
+                    modern AI systems.
+                </p>
+            </div>
+
+            <div class="project">
+                <div class="project-number">04 // SYSTEM</div>
+                <h3>OS EXPLORER</h3>
+                <p>
+                    Understanding operating systems,
+                    processes and computer architecture.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- BHUMIX -->
+
+    <section class="panel" data-section="5">
+
+        <div class="panel-label">
+            SECTOR 05 // CREATIVE SYSTEM
+        </div>
+
+        <h2>
+            BHUMIX<br>
+            CORE
+        </h2>
+
+        <p>
+            Bhumix Core is my creative technology space —
+            a place where cybersecurity, futuristic visuals,
+            experiments, storytelling and technology meet.
+        </p>
+
+        <div class="panel-box">
+
+            <div class="stat-card">
+                <div class="stat-title">CONTENT</div>
+                <div class="stat-value">TECH</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">STYLE</div>
+                <div class="stat-value">FUTURE</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">VISUAL</div>
+                <div class="stat-value">CYBER</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-title">MISSION</div>
+                <div class="stat-value">CREATE</div>
+            </div>
+
+        </div>
+
+        <div class="terminal">
+
+            <div class="term-head">
+                <span class="term-dot"></span>
+                <span class="term-dot"></span>
+                <span class="term-dot"></span>
+            </div>
+
+            <div class="term-body">
+
+                <div>
+                    <span class="green">BHUMIX_CORE</span>
+                </div>
+
+                <div>
+                    Build with trust.
+                </div>
+
+                <div>
+                    Explore technology.
+                </div>
+
+                <div>
+                    Create something different.
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- FUTURE -->
+
+    <section class="panel" data-section="6">
+
+        <div class="panel-label">
+            SECTOR 06 // DESTINATION
+        </div>
+
+        <h2>
+            THE NEXT<br>
+            CHAPTER
+        </h2>
+
+        <p>
+            This portfolio isn't a finished identity. It's a live
+            representation of the direction I'm moving toward:
+            stronger coding, deeper cybersecurity knowledge,
+            advanced projects and eventually my own software systems.
+        </p>
+
+        <div class="timeline">
+
+            <div class="timeline-item">
+                <strong>01 // FOUNDATION</strong>
+                <span>
+                    C, DSA, algorithms and computer fundamentals.
+                </span>
+            </div>
+
+            <div class="timeline-item">
+                <strong>02 // SYSTEMS</strong>
+                <span>
+                    Linux, networking, operating systems and backend.
+                </span>
+            </div>
+
+            <div class="timeline-item">
+                <strong>03 // SECURITY</strong>
+                <span>
+                    Web security, ethical security testing and defense.
+                </span>
+            </div>
+
+            <div class="timeline-item">
+                <strong>04 // BUILD</strong>
+                <span>
+                    Real-world applications, tools and experiments.
+                </span>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- TELEMETRY -->
+
+    <div class="telemetry">
+
+        <div class="telemetry-row">
+            <span>VELOCITY</span>
+            <b id="velocity">000.00</b>
+        </div>
+
+        <div class="telemetry-row">
+            <span>SECTOR</span>
+            <b id="sector">00</b>
+        </div>
+
+        <div class="telemetry-row">
+            <span>FPS</span>
+            <b id="fps">60</b>
+        </div>
+
+        <div class="telemetry-row">
+            <span>ALTITUDE</span>
+            <b id="altitude">0000</b>
+        </div>
+
+        <div class="telemetry-row">
+            <span>COORD</span>
+            <b id="coord">000 : 000</b>
+        </div>
+
+    </div>
+
+    <!-- NAV -->
+
+    <div class="nav">
+
+        <div class="nav-dot active" data-go="0"></div>
+        <div class="nav-dot" data-go="1"></div>
+        <div class="nav-dot" data-go="2"></div>
+        <div class="nav-dot" data-go="3"></div>
+        <div class="nav-dot" data-go="4"></div>
+        <div class="nav-dot" data-go="5"></div>
+        <div class="nav-dot" data-go="6"></div>
+
+    </div>
+
+    <div class="object-card">
+
+        <div class="object-id" id="objectID">
+            SOL // 000
+        </div>
+
+        <div class="object-name" id="objectName">
+            HOME STAR
+        </div>
+
+    </div>
+
+    <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+</div>
+
+<div class="scroll-space"></div>
+
+<!-- ============================================================
+     THREE.JS
+     ============================================================ -->
+
+<script type="importmap">
+{
+    "imports":{
+        "three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    }
+}
+</script>
+
+<script type="module">
+
+import * as THREE from "three";
+
+import {
+    EffectComposer
+} from "three/addons/postprocessing/EffectComposer.js";
+
+import {
+    RenderPass
+} from "three/addons/postprocessing/RenderPass.js";
+
+import {
+    UnrealBloomPass
+} from "three/addons/postprocessing/UnrealBloomPass.js";
+
+import {
+    OutputPass
+} from "three/addons/postprocessing/OutputPass.js";
+
+
+/* ============================================================
+   CORE
+   ============================================================ */
+
+const container = document.getElementById("space");
+
+const scene = new THREE.Scene();
+
+scene.background = new THREE.Color(0x010208);
+
+scene.fog = new THREE.FogExp2(
+    0x010208,
+    0.0007
+);
+
+
+/* ============================================================
+   CAMERA
+   ============================================================ */
+
+const camera = new THREE.PerspectiveCamera(
+    60,
+    innerWidth / innerHeight,
+    0.1,
+    5000
+);
+
+camera.position.set(
+    0,
+    8,
+    85
+);
+
+
+/* ============================================================
+   RENDERER
+   ============================================================ */
+
+const renderer = new THREE.WebGLRenderer({
+    antialias:true,
+    powerPreference:"high-performance"
+});
+
+renderer.setPixelRatio(
+    Math.min(devicePixelRatio,1.7)
+);
+
+renderer.setSize(
+    innerWidth,
+    innerHeight
+);
+
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+renderer.toneMapping =
+    THREE.ACESFilmicToneMapping;
+
+renderer.toneMappingExposure = 1.15;
+
+container.appendChild(renderer.domElement);
+
+
+/* ============================================================
+   POST PROCESSING
+   ============================================================ */
+
+const composer = new EffectComposer(renderer);
+
+const renderPass =
+    new RenderPass(scene,camera);
+
+composer.addPass(renderPass);
+
+const bloom =
+    new UnrealBloomPass(
+        new THREE.Vector2(
+            innerWidth,
+            innerHeight
+        ),
+        0.8,
+        0.65,
+        0.12
+    );
+
+composer.addPass(bloom);
+
+const outputPass =
+    new OutputPass();
+
+composer.addPass(outputPass);
+
+
+/* ============================================================
+   LIGHTING
+   ============================================================ */
+
+const ambient =
+    new THREE.HemisphereLight(
+        0x7abfff,
+        0x03030a,
+        0.35
+    );
+
+scene.add(ambient);
+
+const keyLight =
+    new THREE.PointLight(
+        0x9beeff,
+        80,
+        1000
+    );
+
+scene.add(keyLight);
+
+
+/* ============================================================
+   STAR FIELD
+   ============================================================ */
+
+function createStars(
+    count,
+    radius,
+    size,
+    color,
+    opacity
+){
+
+    const geometry =
+        new THREE.BufferGeometry();
+
+    const positions =
+        new Float32Array(count * 3);
+
+    for(
+        let i=0;
+        i<count;
+        i++
+    ){
+
+        const r =
+            radius *
+            (0.4 + Math.random() * 0.6);
+
+        const theta =
+            Math.random() *
+            Math.PI * 2;
+
+        const phi =
+            Math.acos(
+                THREE.MathUtils.randFloatSpread(2)
+            );
+
+        positions[i*3] =
+            r *
+            Math.sin(phi) *
+            Math.cos(theta);
+
+        positions[i*3+1] =
+            r *
+            Math.cos(phi);
+
+        positions[i*3+2] =
+            r *
+            Math.sin(phi) *
+            Math.sin(theta);
+    }
+
+    geometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(
+            positions,
+            3
+        )
+    );
+
+    const material =
+        new THREE.PointsMaterial({
+
+            color,
+
+            size,
+
+            transparent:true,
+
+            opacity,
+
+            depthWrite:false,
+
+            blending:
+                THREE.AdditiveBlending
+        });
+
+    const points =
+        new THREE.Points(
+            geometry,
+            material
+        );
+
+    scene.add(points);
+
+    return points;
+}
+
+
+const starsFar =
+    createStars(
+        12000,
+        2500,
+        1.3,
+        0x8ca8ff,
+        .8
+    );
+
+const starsNear =
+    createStars(
+        3500,
+        1200,
+        2.0,
+        0x00eaff,
+        .65
+    );
+
+const starsTiny =
+    createStars(
+        9000,
+        3500,
+        .8,
+        0xffffff,
+        .5
+    );
+
+
+/* ============================================================
+   NEBULA
+   ============================================================ */
+
+function createNebula(){
+
+    const group =
+        new THREE.Group();
+
+    const count = 4500;
+
+    const geometry =
+        new THREE.BufferGeometry();
+
+    const positions =
+        new Float32Array(
+            count * 3
+        );
+
+    const colors =
+        new Float32Array(
+            count * 3
+        );
+
+    const colorA =
+        new THREE.Color(0x0077ff);
+
+    const colorB =
+        new THREE.Color(0x9d00ff);
+
+    for(
+        let i=0;
+        i<count;
+        i++
+    ){
+
+        const angle =
+            Math.random() *
+            Math.PI * 2;
+
+        const radius =
+            120 +
+            Math.random() * 700;
+
+        const spread =
+            (Math.random()-.5) *
+            130;
+
+        positions[i*3] =
+            Math.cos(angle) *
+            radius;
+
+        positions[i*3+1] =
+            spread;
+
+        positions[i*3+2] =
+            Math.sin(angle) *
+            radius;
+
+        const mix =
+            Math.random();
+
+        const c =
+            colorA.clone().lerp(
+                colorB,
+                mix
+            );
+
+        colors[i*3] = c.r;
+        colors[i*3+1] = c.g;
+        colors[i*3+2] = c.b;
+    }
+
+    geometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(
+            positions,
+            3
+        )
+    );
+
+    geometry.setAttribute(
+        "color",
+        new THREE.BufferAttribute(
+            colors,
+            3
+        )
+    );
+
+    const material =
+        new THREE.PointsMaterial({
+
+            size:2.4,
+
+            vertexColors:true,
+
+            transparent:true,
+
+            opacity:.17,
+
+            depthWrite:false,
+
+            blending:
+                THREE.AdditiveBlending
+        });
+
+    const points =
+        new THREE.Points(
+            geometry,
+            material
+        );
+
+    group.add(points);
+
+    scene.add(group);
+
+    return group;
+}
+
+const nebula =
+    createNebula();
+
+
+/* ============================================================
+   SUN
+   ============================================================ */
+
+const sunGroup =
+    new THREE.Group();
+
+scene.add(sunGroup);
+
+const sunGeometry =
+    new THREE.SphereGeometry(
+        12,
+        64,
+        64
+    );
+
+const sunMaterial =
+    new THREE.MeshBasicMaterial({
+        color:0x8ceeff
+    });
+
+const sun =
+    new THREE.Mesh(
+        sunGeometry,
+        sunMaterial
+    );
+
+sunGroup.add(sun);
+
+const sunGlow =
+    new THREE.Mesh(
+
+        new THREE.SphereGeometry(
+            15,
+            48,
+            48
+        ),
+
+        new THREE.MeshBasicMaterial({
+
+            color:0x00dfff,
+
+            transparent:true,
+
+            opacity:.07,
+
+            blending:
+                THREE.AdditiveBlending,
+
+            depthWrite:false
+        })
+    );
+
+sunGroup.add(sunGlow);
+
+
+for(let i=0;i<4;i++){
+
+    const glow =
+        new THREE.Mesh(
+
+            new THREE.SphereGeometry(
+                18+i*4,
+                32,
+                32
+            ),
+
+            new THREE.MeshBasicMaterial({
+
+                color:
+                    i%2
+                    ? 0x0066ff
+                    : 0x00ffff,
+
+                transparent:true,
+
+                opacity:
+                    .025/(i+1),
+
+                blending:
+                    THREE.AdditiveBlending,
+
+                depthWrite:false
+            })
+        );
+
+    sunGroup.add(glow);
+}
+
+sunGroup.position.set(
+    0,
+    0,
+    0
+);
+
+
+/* ============================================================
+   PLANET TEXTURE GENERATOR
+   ============================================================ */
+
+function textureCanvas(
+    type
+){
+
+    const size = 512;
+
+    const canvas =
+        document.createElement(
+            "canvas"
+        );
+
+    canvas.width=size;
+    canvas.height=size;
+
+    const ctx =
+        canvas.getContext("2d");
+
+    const image =
+        ctx.createImageData(
+            size,
+            size
+        );
+
+    for(
+        let y=0;
+        y<size;
+        y++
+    ){
+
+        for(
+            let x=0;
+            x<size;
+            x++
+        ){
+
+            const i =
+                (y*size+x)*4;
+
+            const nx =
+                x/size;
+
+            const ny =
+                y/size;
+
+            const wave =
+                Math.sin(
+                    nx*18 +
+                    Math.sin(ny*11)*2
+                );
+
+            const wave2 =
+                Math.sin(
+                    ny*31 +
+                    nx*5
+                );
+
+            let r,g,b;
+
+            if(type==="earth"){
+
+                r =
+                    15 +
+                    wave*18;
+
+                g =
+                    45 +
+                    wave2*28;
+
+                b =
+                    90 +
+                    wave*45;
+
+                if(
+                    wave2 > .62
+                ){
+
+                    r+=25;
+                    g+=35;
+                    b+=12;
+                }
+            }
+
+            else if(type==="cyber"){
+
+                r =
+                    5 +
+                    wave*12;
+
+                g =
+                    45 +
+                    wave2*80;
+
+                b =
+                    100 +
+                    wave*110;
+            }
+
+            else if(type==="gas"){
+
+                r =
+                    130 +
+                    wave*60;
+
+                g =
+                    40 +
+                    wave2*25;
+
+                b =
+                    180 +
+                    wave*50;
+            }
+
+            else if(type==="mars"){
+
+                r =
+                    90 +
+                    wave*40;
+
+                g =
+                    22 +
+                    wave2*18;
+
+                b =
+                    15 +
+                    wave*12;
+            }
+
+            else if(type==="ice"){
+
+                r =
+                    80 +
+                    wave*55;
+
+                g =
+                    130 +
+                    wave2*50;
+
+                b =
+                    180 +
+                    wave*65;
+            }
+
+            else{
+
+                r=40;
+                g=50;
+                b=70;
+            }
+
+            image.data[i] =
+                Math.max(0,Math.min(255,r));
+
+            image.data[i+1] =
+                Math.max(0,Math.min(255,g));
+
+            image.data[i+2] =
+                Math.max(0,Math.min(255,b));
+
+            image.data[i+3] = 255;
+        }
+    }
+
+    ctx.putImageData(
+        image,
+        0,
+        0
+    );
+
+    const texture =
+        new THREE.CanvasTexture(
+            canvas
+        );
+
+    texture.colorSpace =
+        THREE.SRGBColorSpace;
+
+    return texture;
+}
+
+
+/* ============================================================
+   ATMOSPHERE
+   ============================================================ */
+
+function atmosphere(
+    radius,
+    color
+){
+
+    const material =
+        new THREE.ShaderMaterial({
+
+            uniforms:{
+                glowColor:{
+                    value:
+                        new THREE.Color(color)
+                }
+            },
+
+            vertexShader:`
+
+                varying vec3 vNormal;
+
+                void main(){
+
+                    vNormal =
+                        normalize(
+                            normalMatrix *
+                            normal
+                        );
+
+                    gl_Position =
+                        projectionMatrix *
+                        modelViewMatrix *
+                        vec4(position,1.0);
+                }
+
+            `,
+
+            fragmentShader:`
+
+                uniform vec3 glowColor;
+
+                varying vec3 vNormal;
+
+                void main(){
+
+                    float intensity =
+                        pow(
+                            0.75 -
+                            dot(
+                                vNormal,
+                                vec3(0.0,0.0,1.0)
+                            ),
+                            3.0
+                        );
+
+                    gl_FragColor =
+                        vec4(
+                            glowColor,
+                            intensity
+                        );
+                }
+
+            `,
+
+            transparent:true,
+
+            blending:
+                THREE.AdditiveBlending,
+
+            side:
+                THREE.BackSide,
+
+            depthWrite:false
+        });
+
+    return new THREE.Mesh(
+        new THREE.SphereGeometry(
+            radius,
+            48,
+            48
+        ),
+        material
+    );
+}
+
+
+/* ============================================================
+   PLANETS
+   ============================================================ */
+
+const planets=[];
+
+const planetData=[
+
+    {
+        name:"ABOUT-01",
+        title:"IDENTITY",
+        texture:"earth",
+        color:0x00cfff,
+        radius:5,
+        orbit:32,
+        speed:.18
+    },
+
+    {
+        name:"CYBER-02",
+        title:"CYBER SECURITY",
+        texture:"cyber",
+        color:0x00ffff,
+        radius:6,
+        orbit:55,
+        speed:.13
+    },
+
+    {
+        name:"CODE-X",
+        title:"CODE LAB",
+        texture:"gas",
+        color:0x8a55ff,
+        radius:7,
+        orbit:80,
+        speed:.10
+    },
+
+    {
+        name:"NOVA-G",
+        title:"PROJECT DECK",
+        texture:"mars",
+        color:0xff5533,
+        radius:5.5,
+        orbit:108,
+        speed:.075
+    },
+
+    {
+        name:"BHX-9",
+        title:"BHUMIX CORE",
+        texture:"ice",
+        color:0x00aaff,
+        radius:6.5,
+        orbit:140,
+        speed:.055
+    },
+
+    {
+        name:"FUTURA",
+        title:"NEXT CHAPTER",
+        texture:"cyber",
+        color:0x66ffff,
+        radius:8,
+        orbit:175,
+        speed:.04
+    }
+
+];
+
+
+planetData.forEach(
+    (data,index)=>{
+
+        const pivot =
+            new THREE.Group();
+
+        pivot.rotation.y =
+            Math.random() *
+            Math.PI * 2;
+
+        scene.add(pivot);
+
+        const group =
+            new THREE.Group();
+
+        group.position.x =
+            data.orbit;
+
+        pivot.add(group);
+
+        const texture =
+            textureCanvas(
+                data.texture
+            );
+
+        const material =
+            new THREE.MeshStandardMaterial({
+
+                map:texture,
+
+                roughness:.65,
+
+                metalness:
+                    data.texture==="cyber"
+                    ? .65
+                    : .12
+            });
+
+        const mesh =
+            new THREE.Mesh(
+
+                new THREE.SphereGeometry(
+                    data.radius,
+                    64,
+                    64
+                ),
+
+                material
+            );
+
+        mesh.userData.section =
+            index+1;
+
+        group.add(mesh);
+
+        const glow =
+            atmosphere(
+                data.radius*1.18,
+                data.color
+            );
+
+        group.add(glow);
+
+        /* rings */
+
+        if(index===4){
+
+            const ring =
+                new THREE.Mesh(
+
+                    new THREE.RingGeometry(
+                        data.radius*1.4,
+                        data.radius*2.0,
+                        96
+                    ),
+
+                    new THREE.MeshBasicMaterial({
+
+                        color:0x00aaff,
+
+                        transparent:true,
+
+                        opacity:.25,
+
+                        side:
+                            THREE.DoubleSide,
+
+                        blending:
+                            THREE.AdditiveBlending
+                    })
+                );
+
+            ring.rotation.x =
+                Math.PI/2.4;
+
+            group.add(ring);
+        }
+
+        /* moon */
+
+        if(index===1 || index===4){
+
+            const moon =
+                new THREE.Mesh(
+
+                    new THREE.SphereGeometry(
+                        .7,
+                        24,
+                        24
+                    ),
+
+                    new THREE.MeshStandardMaterial({
+                        color:0x7c8491,
+                        roughness:1
+                    })
+                );
+
+            moon.position.set(
+                data.radius*2.2,
+                0,
+                0
+            );
+
+            group.add(moon);
+
+            moon.userData.orbit =
+                1.2 +
+                Math.random();
+
+            moon.userData.angle =
+                Math.random()*6.28;
+
+            moon.userData.radius =
+                data.radius*2.2;
+        }
+
+        /* orbit */
+
+        const orbitCurve =
+            new THREE.EllipseCurve(
+                0,
+                0,
+                data.orbit,
+                data.orbit,
+                0,
+                Math.PI*2,
+                false,
+                0
+            );
+
+        const orbitPoints =
+            orbitCurve
+                .getPoints(180)
+                .map(
+                    p =>
+                    new THREE.Vector3(
+                        p.x,
+                        0,
+                        p.y
+                    )
+                );
+
+        const orbitGeometry =
+            new THREE.BufferGeometry()
+                .setFromPoints(
+                    orbitPoints
+                );
+
+        const orbitMaterial =
+            new THREE.LineBasicMaterial({
+
+                color:data.color,
+
+                transparent:true,
+
+                opacity:.075
+            });
+
+        const orbitLine =
+            new THREE.LineLoop(
+                orbitGeometry,
+                orbitMaterial
+            );
+
+        scene.add(
+            orbitLine
+        );
+
+        planets.push({
+
+            pivot,
+            group,
+            mesh,
+            data,
+            angle:
+                pivot.rotation.y,
+
+            moon:
+                group.children.find(
+                    child =>
+                        child.userData &&
+                        child.userData.orbit
+                )
+        });
+
+    }
+);
+
+
+/* ============================================================
+   ASTEROID BELT
+   ============================================================ */
+
+const asteroidCount = 900;
+
+const asteroidGeometry =
+    new THREE.IcosahedronGeometry(
+        .25,
+        0
+    );
+
+const asteroidMaterial =
+    new THREE.MeshStandardMaterial({
+
+        color:0x56616e,
+
+        roughness:1,
+
+        metalness:.05
+    });
+
+const asteroidMesh =
+    new THREE.InstancedMesh(
+
+        asteroidGeometry,
+
+        asteroidMaterial,
+
+        asteroidCount
+    );
+
+const dummy =
+    new THREE.Object3D();
+
+for(
+    let i=0;
+    i<asteroidCount;
+    i++
+){
+
+    const angle =
+        Math.random() *
+        Math.PI*2;
+
+    const radius =
+        118 +
+        Math.random()*28;
+
+    dummy.position.set(
+
+        Math.cos(angle) *
+        radius,
+
+        THREE.MathUtils.randFloatSpread(
+            7
+        ),
+
+        Math.sin(angle) *
+        radius
+
+    );
+
+    const scale =
+        .25 +
+        Math.random()*.9;
+
+    dummy.scale.setScalar(
+        scale
+    );
+
+    dummy.rotation.set(
+        Math.random()*6,
+        Math.random()*6,
+        Math.random()*6
+    );
+
+    dummy.updateMatrix();
+
+    asteroidMesh.setMatrixAt(
+        i,
+        dummy.matrix
+    );
+}
+
+scene.add(
+    asteroidMesh
+);
+
+
+/* ============================================================
+   SPACE DUST
+   ============================================================ */
+
+const dustCount = 3000;
+
+const dustGeometry =
+    new THREE.BufferGeometry();
+
+const dustPositions =
+    new Float32Array(
+        dustCount*3
+    );
+
+for(
+    let i=0;
+    i<dustCount;
+    i++
+){
+
+    dustPositions[i*3] =
+        THREE.MathUtils.randFloatSpread(
+            1000
+        );
+
+    dustPositions[i*3+1] =
+        THREE.MathUtils.randFloatSpread(
+            500
+        );
+
+    dustPositions[i*3+2] =
+        THREE.MathUtils.randFloatSpread(
+            1000
+        );
+}
+
+dustGeometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(
+        dustPositions,
+        3
+    )
+);
+
+const dust =
+    new THREE.Points(
+
+        dustGeometry,
+
+        new THREE.PointsMaterial({
+
+            color:0x638ca5,
+
+            size:.6,
+
+            transparent:true,
+
+            opacity:.35,
+
+            depthWrite:false
+        })
+    );
+
+scene.add(dust);
+
+
+/* ============================================================
+   WARP STREAKS
+   ============================================================ */
+
+const warpGroup =
+    new THREE.Group();
+
+scene.add(
+    warpGroup
+);
+
+const warpLines=[];
+
+for(
+    let i=0;
+    i<120;
+    i++
+){
+
+    const geometry =
+        new THREE.BufferGeometry();
+
+    const length =
+        4 +
+        Math.random()*15;
+
+    const x =
+        THREE.MathUtils.randFloatSpread(
+            100
+        );
+
+    const y =
+        THREE.MathUtils.randFloatSpread(
+            60
+        );
+
+    const z =
+        -Math.random()*500;
+
+    const points=[
+
+        new THREE.Vector3(
+            x,
+            y,
+            z
+        ),
+
+        new THREE.Vector3(
+            x,
+            y,
+            z-length
+        )
+
+    ];
+
+    geometry.setFromPoints(
+        points
+    );
+
+    const material =
+        new THREE.LineBasicMaterial({
+
+            color:
+                i%3===0
+                ? 0x00eaff
+                : 0x6688ff,
+
+            transparent:true,
+
+            opacity:0
+        });
+
+    const line =
+        new THREE.Line(
+            geometry,
+            material
+        );
+
+    warpGroup.add(
+        line
+    );
+
+    warpLines.push(line);
+}
+
+
+/* ============================================================
+   CAMERA TARGETS
+   ============================================================ */
+
+const targets=[
+
+    {
+        position:
+            new THREE.Vector3(
+                0,
+                7,
+                85
+            ),
+
+        look:
+            new THREE.Vector3(
+                0,
+                0,
+                0
+            )
+    }
+
+];
+
+planets.forEach(
+    planet=>{
+
+        targets.push({
+
+            position:
+                new THREE.Vector3(
+                    planet.data.orbit*.7,
+                    planet.data.radius*1.5,
+                    planet.data.orbit*.55
+                ),
+
+            look:
+                new THREE.Vector3(
+                    planet.data.orbit,
+                    0,
+                    0
+                )
+
+        });
+
+    }
+);
+
+
+/* ============================================================
+   MOUSE PARALLAX
+   ============================================================ */
+
+let mouseX=0;
+let mouseY=0;
+
+let targetMouseX=0;
+let targetMouseY=0;
+
+window.addEventListener(
+    "pointermove",
+    event=>{
+
+        targetMouseX =
+            (
+                event.clientX /
+                innerWidth
+                -.5
+            );
+
+        targetMouseY =
+            (
+                event.clientY /
+                innerHeight
+                -.5
+            );
+
+    }
+);
+
+
+/* ============================================================
+   SCROLL SYSTEM
+   ============================================================ */
+
+let scrollTarget=0;
+let scrollCurrent=0;
+
+let currentSection=0;
+
+function updateScroll(){
+
+    const max =
+        document.body.scrollHeight -
+        innerHeight;
+
+    scrollTarget =
+        max > 0
+        ? scrollY/max
+        : 0;
+
+    const total =
+        6;
+
+    const exact =
+        scrollTarget *
+        total;
+
+    currentSection =
+        Math.min(
+            total,
+            Math.floor(
+                exact+.5
+            )
+        );
+
+    document
+        .querySelectorAll(".panel")
+        .forEach(
+            panel=>{
+
+                const section =
+                    Number(
+                        panel.dataset.section
+                    );
+
+                panel.classList.toggle(
+                    "active",
+                    section===
+                    currentSection
+                );
+
+            }
+        );
+
+    document
+        .querySelectorAll(".nav-dot")
+        .forEach(
+            dot=>{
+
+                dot.classList.toggle(
+                    "active",
+                    Number(dot.dataset.go)===
+                    currentSection
+                );
+
+            }
+        );
+
+    document.getElementById(
+        "sector"
+    ).textContent =
+        String(
+            currentSection
+        ).padStart(2,"0");
+
+    document.getElementById(
+        "progressBar"
+    ).style.width =
+        (
+            scrollTarget*100
+        )+"%";
+}
+
+window.addEventListener(
+    "scroll",
+    updateScroll,
+    {passive:true}
+);
+
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+
+document
+    .querySelectorAll(".nav-dot")
+    .forEach(
+        dot=>{
+
+            dot.addEventListener(
+                "click",
+                ()=>{
+
+                    const target =
+                        Number(
+                            dot.dataset.go
+                        );
+
+                    const max =
+                        document.body.scrollHeight -
+                        innerHeight;
+
+                    const position =
+                        target/6 *
+                        max;
+
+                    window.scrollTo({
+
+                        top:position,
+
+                        behavior:"smooth"
+
+                    });
+
+                }
+            );
+
+        }
+    );
+
+
+/* ============================================================
+   RAYCASTING
+   ============================================================ */
+
+const raycaster =
+    new THREE.Raycaster();
+
+const pointer =
+    new THREE.Vector2();
+
+window.addEventListener(
+    "pointerdown",
+    event=>{
+
+        pointer.x =
+            (
+                event.clientX /
+                innerWidth
+            )*2-1;
+
+        pointer.y =
+            -(
+                event.clientY /
+                innerHeight
+            )*2+1;
+
+        raycaster.setFromCamera(
+            pointer,
+            camera
+        );
+
+        const objects =
+            planets.map(
+                p=>p.mesh
+            );
+
+        const hits =
+            raycaster.intersectObjects(
+                objects
+            );
+
+        if(hits.length){
+
+            const section =
+                hits[0].object
+                    .userData
+                    .section;
+
+            const max =
+                document.body.scrollHeight -
+                innerHeight;
+
+            window.scrollTo({
+
+                top:
+                    section/6 *
+                    max,
+
+                behavior:"smooth"
+
+            });
+
+        }
+
+    }
+);
+
+
+/* ============================================================
+   CAMERA
+   ============================================================ */
+
+const currentCamera =
+    new THREE.Vector3();
+
+const currentLook =
+    new THREE.Vector3();
+
+function getCameraTarget(){
+
+    if(
+        currentSection===0
+    ){
+
+        return targets[0];
+
+    }
+
+    const planet =
+        planets[
+            currentSection-1
+        ];
+
+    if(!planet){
+
+        return targets[
+            targets.length-1
+        ];
+
+    }
+
+    return targets[
+        Math.min(
+            currentSection,
+            targets.length-1
+        )
+    ];
+}
+
+
+/* ============================================================
+   AUDIO
+   ============================================================ */
+
+let audioContext=null;
+let oscillator=null;
+let gain=null;
+let audioEnabled=false;
+
+const audioBtn =
+    document.getElementById(
+        "audioBtn"
+    );
+
+audioBtn.addEventListener(
+    "click",
+    ()=>{
+
+        if(!audioContext){
+
+            audioContext =
+                new (
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
+
+            oscillator =
+                audioContext.createOscillator();
+
+            gain =
+                audioContext.createGain();
+
+            oscillator.type =
+                "sine";
+
+            oscillator.frequency.value =
+                48;
+
+            gain.gain.value =
+                .0001;
+
+            oscillator.connect(
+                gain
+            );
+
+            gain.connect(
+                audioContext.destination
+            );
+
+            oscillator.start();
+
+        }
+
+        if(
+            audioContext.state ===
+            "suspended"
+        ){
+
+            audioContext.resume();
+
+        }
+
+        audioEnabled =
+            !audioEnabled;
+
+        gain.gain.setTargetAtTime(
+
+            audioEnabled
+            ? .025
+            : .0001,
+
+            audioContext.currentTime,
+
+            .4
+
+        );
+
+        audioBtn.textContent =
+            audioEnabled
+            ? "AUDIO: ON"
+            : "AUDIO: OFF";
+
+    }
+);
+
+
+/* ============================================================
+   BOOT SEQUENCE
+   ============================================================ */
+
+let bootProgress=0;
+
+const bootBar =
+    document.getElementById(
+        "bootBar"
+    );
+
+const bootPercent =
+    document.getElementById(
+        "bootPercent"
+    );
+
+const bootText =
+    document.getElementById(
+        "bootText"
+    );
+
+const bootMessages=[
+
+    "INITIALIZING DIGITAL ENVIRONMENT",
+
+    "LOADING STAR FIELD",
+
+    "CALIBRATING ORBITAL SYSTEM",
+
+    "GENERATING PLANETS",
+
+    "INITIALIZING SECURITY CORE",
+
+    "BUILDING DIGITAL UNIVERSE",
+
+    "SYSTEM READY"
+
+];
+
+const bootTimer =
+    setInterval(
+        ()=>{
+
+            bootProgress +=
+                Math.random()*10+5;
+
+            if(
+                bootProgress>=100
+            ){
+
+                bootProgress=100;
+
+                clearInterval(
+                    bootTimer
+                );
+
+                setTimeout(
+                    ()=>{
+
+                        document
+                            .getElementById(
+                                "boot"
+                            )
+                            .classList
+                            .add("hide");
+
+                    },
+                    600
+                );
+
+            }
+
+            bootBar.style.width =
+                bootProgress+"%";
+
+            bootPercent.textContent =
+                Math.floor(
+                    bootProgress
+                )+"%";
+
+            bootText.textContent =
+                bootMessages[
+                    Math.min(
+                        bootMessages.length-1,
+                        Math.floor(
+                            bootProgress /
+                            100 *
+                            bootMessages.length
+                        )
+                    )
+                ];
+
+        },
+        180
+    );
+
+
+/* ============================================================
+   ANIMATION
+   ============================================================ */
+
+let previousTime =
+    performance.now();
+
+let fpsTimer =
+    performance.now();
+
+let frames=0;
+
+let displayedFPS=60;
+
+function animate(){
+
+    requestAnimationFrame(
+        animate
+    );
+
+    const now =
+        performance.now();
+
+    const delta =
+        Math.min(
+            .05,
+            (now-previousTime)/1000
+        );
+
+    previousTime=now;
+
+    frames++;
+
+    if(
+        now-fpsTimer>500
+    ){
+
+        displayedFPS =
+            Math.round(
+                frames /
+                ((now-fpsTimer)/1000)
+            );
+
+        frames=0;
+
+        fpsTimer=now;
+
+        document.getElementById(
+            "fps"
+        ).textContent =
+            displayedFPS;
+    }
+
+
+    /* stars */
+
+    starsFar.rotation.y +=
+        delta*.002;
+
+    starsNear.rotation.y +=
+        delta*.005;
+
+    starsTiny.rotation.y +=
+        delta*.001;
+
+
+    /* nebula */
+
+    nebula.rotation.y +=
+        delta*.0007;
+
+    nebula.rotation.x =
+        Math.sin(now*.00005)*.08;
+
+
+    /* sun */
+
+    sun.rotation.y +=
+        delta*.12;
+
+    sunGlow.scale.setScalar(
+        1 +
+        Math.sin(
+            now*.0018
+        )*.035
+    );
+
+
+    /* planets */
+
+    planets.forEach(
+        planet=>{
+
+            planet.pivot.rotation.y +=
+                delta *
+                planet.data.speed;
+
+            planet.mesh.rotation.y +=
+                delta*.18;
+
+            if(
+                planet.moon
+            ){
+
+                planet.moon.userData.angle +=
+                    delta *
+                    planet.moon.userData.orbit;
+
+                const a =
+                    planet.moon.userData.angle;
+
+                const r =
+                    planet.moon.userData.radius;
+
+                planet.moon.position.x =
+                    Math.cos(a)*r;
+
+                planet.moon.position.z =
+                    Math.sin(a)*r;
+
+            }
+
+        }
+    );
+
+
+    /* asteroid field */
+
+    asteroidMesh.rotation.y +=
+        delta*.012;
+
+
+    /* mouse smoothing */
+
+    mouseX +=
+        (
+            targetMouseX -
+            mouseX
+        )*.035;
+
+    mouseY +=
+        (
+            targetMouseY -
+            mouseY
+        )*.035;
+
+
+    /* scroll smoothing */
+
+    scrollCurrent +=
+        (
+            scrollTarget -
+            scrollCurrent
+        )*.045;
+
+
+    const target =
+        getCameraTarget();
+
+
+    /* camera */
+
+    currentCamera.lerp(
+        target.position,
+        .045
+    );
+
+    currentLook.lerp(
+        target.look,
+        .045
+    );
+
+
+    camera.position.copy(
+        currentCamera
+    );
+
+
+    camera.position.x +=
+        mouseX*3.5;
+
+    camera.position.y +=
+        -mouseY*2.5;
+
+
+    camera.lookAt(
+        currentLook
+    );
+
+
+    /* FOV */
+
+    const desiredFOV =
+        60 +
+        Math.abs(
+            scrollTarget -
+            scrollCurrent
+        ) *
+        140;
+
+    camera.fov +=
+        (
+            desiredFOV -
+            camera.fov
+        )*.08;
+
+    camera.updateProjectionMatrix();
+
+
+    /* warp */
+
+    const velocity =
+        Math.abs(
+            scrollTarget -
+            scrollCurrent
+        ) *
+        9000;
+
+    warpLines.forEach(
+        (line,i)=>{
+
+            line.material.opacity =
+                Math.min(
+                    .55,
+                    velocity/900
+                );
+
+            line.position.z =
+                (
+                    (now*.02*(i%3+1))
+                    % 500
+                ) - 250;
+
+        }
+    );
+
+
+    /* key light */
+
+    keyLight.position.lerp(
+        camera.position,
+        .05
+    );
+
+
+    /* HUD */
+
+    document.getElementById(
+        "velocity"
+    ).textContent =
+        velocity
+            .toFixed(2)
+            .padStart(6,"0");
+
+    document.getElementById(
+        "altitude"
+    ).textContent =
+        Math.floor(
+            camera.position.length()
+        )
+        .toString()
+        .padStart(4,"0");
+
+    document.getElementById(
+        "coord"
+    ).textContent =
+        Math.floor(
+            camera.position.x
+        )
+        .toString()
+        .padStart(3,"0")
+        +
+        " : " +
+        Math.floor(
+            camera.position.z
+        )
+        .toString()
+        .padStart(3,"0");
+
+
+    /* object label */
+
+    if(
+        currentSection===0
+    ){
+
+        document.getElementById(
+            "objectID"
+        ).textContent =
+            "SOL // 000";
+
+        document.getElementById(
+            "objectName"
+        ).textContent =
+            "HOME STAR";
+
+    }else{
+
+        const planet =
+            planets[
+                currentSection-1
+            ];
+
+        if(planet){
+
+            document.getElementById(
+                "objectID"
+            ).textContent =
+                planet.data.name;
+
+            document.getElementById(
+                "objectName"
+            ).textContent =
+                planet.data.title;
+
+        }
+
+    }
+
+
+    /* bloom */
+
+    bloom.strength =
+        .65 +
+        Math.min(
+            .9,
+            velocity/1000
+        );
+
+
+    composer.render();
+
+}
+
+animate();
+
+
+/* ============================================================
+   RESIZE
+   ============================================================ */
+
+window.addEventListener(
+    "resize",
+    ()=>{
+
+        camera.aspect =
+            innerWidth /
+            innerHeight;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setPixelRatio(
+            Math.min(
+                devicePixelRatio,
+                1.7
+            )
+        );
+
+        renderer.setSize(
+            innerWidth,
+            innerHeight
+        );
+
+        composer.setSize(
+            innerWidth,
+            innerHeight
+        );
+
+    }
+);
+
+
+/* ============================================================
+   INITIALIZE
+   ============================================================ */
+
+updateScroll();
+
+</script>
+
+</body>
+</html>
